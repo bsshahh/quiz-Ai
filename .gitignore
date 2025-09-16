@@ -1,9 +1,2 @@
 node_modules/
-
-# Docker
-Dockerfile
-docker-compose.yml
-.dockerignore
-docker-compose.*.yml
-docker-compose.override.yml
-
+.env
