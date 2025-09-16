@@ -1,0 +1,471 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "My API",
+    "description": "Description",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5500",
+  "basePath": "/api",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "description": "Authenticate a user (new/exist both) with username, email and password. Returns JWT token.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": ["username","email","password"],
+              "properties": {
+                "username": {
+                  "example": "alex_carse"
+                },
+                "email": {
+                  "example": "alex@example.com"
+                },
+                "password": {
+                  "example": "my123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful, returns JWT token"
+          },
+           "400": {
+        "description": "Validation error"
+      },
+      "401": {
+        "description": "Invalid credentials"
+      },
+      "500": {
+        "description": "Internal Server Error"
+      }
+        }
+      }
+    },
+    "/quizzes/generate": {
+      "post": {
+        "description": "Generate a new AI-powered quiz.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required":true,
+            "type": "string",
+            "description": "Bearer JWT token (e.g., 'Bearer <your_token_here>')"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": ["subject", "gradeLevel", "difficulty", "totalQuestions"],
+              "properties": {
+                "subject": {
+              "type": "string",
+              "example": "Mathematics"
+            },
+            "gradeLevel": {
+              "type": "number",
+              "example": 5
+            },
+            "difficulty": {
+              "type": "string",
+              "example": "medium"
+            },
+            "totalQuestions": {
+              "type": "number",
+              "example": 10
+            },
+            "title": {
+              "type": "string",
+              "example": "AI Generated Quiz for Math"
+            }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/quizzes/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "gradeLevel",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "difficulty",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/quizzes/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string",
+            "required":true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/quizzes/{quizId}/questions/{questionId}/hint": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string",
+            "required":true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/submissions/submit": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string",
+            "required":true
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "quizId": {
+                  "example": "any"
+                },
+                "responses": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/submissions/history": {
+  "get": {
+    "description": "Get submission history with optional filters",
+    "parameters": [
+      {
+        "name": "authorization",
+        "in": "header",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "completedDate",
+        "in": "query",
+        "type": "string",
+        "format": "date",
+        "description": "Filter submissions by a specific date (YYYY-MM-DD)"
+      },
+      {
+        "name": "from",
+        "in": "query",
+        "type": "string",
+        "format": "date",
+        "description": "Start date for range filter (YYYY-MM-DD)"
+      },
+      {
+        "name": "to",
+        "in": "query",
+        "type": "string",
+        "format": "date",
+        "description": "End date for range filter (YYYY-MM-DD)"
+      },
+      {
+        "name": "subject",
+        "in": "query",
+        "type": "string",
+        "description": "Filter submissions by subject"
+      },
+      {
+        "name": "grade",
+        "in": "query",
+        "type": "string",
+        "description": "Filter submissions by grade level"
+      },
+      {
+        "name": "minMarks",
+        "in": "query",
+        "type": "integer",
+        "description": "Filter submissions with minimum marks"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "List of submissions returned successfully"
+      },
+      "401": {
+        "description": "Unauthorized"
+      },
+      "403": {
+        "description": "Forbidden"
+      },
+      "500": {
+        "description": "Internal Server Error"
+      }
+    }
+  }
+}
+,
+    "/submissions/retry": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string",
+            "required":true
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "quizId": {
+                  "example": "any"
+                },
+                "responses": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/submissions/oldsubmissions": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string",
+            "required":true
+          },
+          {
+            "name": "quizId",
+            "in": "query",
+            "type": "string",
+            "required":true
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "type": "string",
+            "required":true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/leaderboard/": {
+      "get": {
+        "description": "",
+        "parameters": [
+           {
+            "name": "authorization",
+            "in": "header",
+            "type": "string",
+            "required":true
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "gradeLevel",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}
